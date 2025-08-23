@@ -1,4 +1,5 @@
 import { ITask } from "@/types/Task";
+import { useDraggable } from "@dnd-kit/core";
 
 interface TaskCardProps {
   task: ITask;
@@ -6,10 +7,22 @@ interface TaskCardProps {
 }
 
 const TaskCard = (props: TaskCardProps) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: props.task.id,
+  });
+
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  } : undefined;
+
   const { task, key } = props;
   return (
     <div
       key={key}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
       className="cursor-grab rounded-lg bg-neutral-50 p-4 shadow-sm hover:shadow-md"
     >
       <h3 className="font-medium text-neutral-700">{task.title}</h3>
