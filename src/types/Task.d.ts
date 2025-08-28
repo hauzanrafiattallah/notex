@@ -12,4 +12,9 @@ interface IColumn {
   title: string;
 }
 
-export type { IColumn, ITask, TaskStatus };
+interface ISelectedTask {
+  activity: string;
+  task: ITask;
+}
+
+export type { IColumn, ISelectedTask, ITask, TaskStatus };

@@ -1,18 +1,23 @@
+import { ITask } from "@/types/Task";
 import { FormEvent } from "react";
 import Button from "./Button";
 
 interface ModalTaskProps {
+  type?: "add" | "edit";
+  selectedTask?: ITask;
   onCancel: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
 const ModalTask = (props: ModalTaskProps) => {
-  const { onCancel, onSubmit } = props;
+  const { onCancel, onSubmit, type = "add", selectedTask } = props;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-        <h2 className="mb-4 text-lg text-neutral-700 font-bold">Add Task</h2>
+        <h2 className="mb-4 text-lg text-neutral-700 font-bold">
+          {type === "edit" ? "Edit Task" : "Add Task"}
+        </h2>
         <form onSubmit={onSubmit} action="" className="space-y-4">
           <label htmlFor="title" className="flex flex-col gap-1">
             <span className="text-md font-semibold text-neutral-600">
@@ -25,6 +30,7 @@ const ModalTask = (props: ModalTaskProps) => {
               required
               id="title"
               name="title"
+              defaultValue={selectedTask?.title}
             />
           </label>
           <label htmlFor="description" className="flex flex-col gap-1">
@@ -37,6 +43,7 @@ const ModalTask = (props: ModalTaskProps) => {
               required
               id="description"
               name="description"
+              defaultValue={selectedTask?.description}
             />
           </label>
           <div className="flex w-full items-center justify-end gap-2">
