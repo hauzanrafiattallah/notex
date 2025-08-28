@@ -4,6 +4,7 @@ import ModalTask from "@/components/ModalTask";
 import { COLUMNS, INITIAL_TASKS } from "@/constants/Task.contstants";
 import { ITask } from "@/types/Task";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { FormEvent, useEffect, useState } from "react";
 
 const App = () => {
@@ -70,7 +71,10 @@ const App = () => {
         </Button>
       </div>
       <div className="flex gap-8 flex-1">
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToWindowEdges]}
+        >
           {COLUMNS.map((column) => (
             <Column
               key={column.id}
