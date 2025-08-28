@@ -7,6 +7,7 @@ import { ITask } from "@/types/Task";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { FormEvent, useEffect, useState } from "react";
+import { Toaster, toast } from "sonner"; // ⬅️ import sonner
 
 const App = () => {
   const [tasks, setTasks] = useState<ITask[]>([]);
@@ -29,7 +30,6 @@ const App = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     if (!over) return;
 
     const taskId = active.id as string;
@@ -37,12 +37,7 @@ const App = () => {
 
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              status: newStatus,
-            }
-          : task
+        task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
   };
@@ -51,17 +46,26 @@ const App = () => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+
+    if (!title || !description) {
+      toast.error("Title and description are required!", { id: "task-error" });
+      return;
+    }
+
     const newTask: ITask = {
       id: Math.random().toString(36).substring(2, 9),
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
+      title,
+      description,
       status: "TODO",
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
-
     event.currentTarget.reset();
     setShowModalAddTask(false);
+
+    toast.success("Task created successfully!", { id: "task-create" });
   };
 
   const handleEditTask = (event: FormEvent<HTMLFormElement>) => {
@@ -81,14 +85,17 @@ const App = () => {
 
     event.currentTarget.reset();
     setSelectedTask(null);
+
+    toast.success("Task updated successfully!", { id: "task-edit" });
   };
 
   const handleDeleteTask = () => {
     setTasks((prevTasks) =>
       prevTasks.filter((task) => task.id !== selectedTask?.task?.id)
     );
-
     setSelectedTask(null);
+
+    toast.error("Task deleted!", { id: "task-delete" });
   };
 
   return (
@@ -102,6 +109,7 @@ const App = () => {
           Add Task
         </Button>
       </div>
+
       <div className="flex gap-8 flex-1">
         <DndContext
           onDragEnd={handleDragEnd}
@@ -117,6 +125,7 @@ const App = () => {
           ))}
         </DndContext>
       </div>
+
       {showModalAddTask && (
         <ModalTask
           onCancel={() => setShowModalAddTask(false)}
@@ -131,7 +140,6 @@ const App = () => {
           onCancel={() => setSelectedTask(null)}
         />
       )}
-
       {selectedTask?.activity === "delete" && selectedTask?.task && (
         <ModalConfirm
           type="delete"
@@ -141,6 +149,15 @@ const App = () => {
           onCancel={() => setSelectedTask(null)}
         />
       )}
+
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
+        toastOptions={{
+          style: { fontSize: "14px", borderRadius: "10px" },
+        }}
+      />
     </main>
   );
 };
