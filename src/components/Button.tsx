@@ -1,15 +1,20 @@
 interface ButtonProps {
   children: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+  onClick?: () => void;
+  className?: string;
 }
 
 const Button = (props: ButtonProps) => {
-  const { children } = props;
+  const { children, type = "button", onClick, className } = props;
   return (
-    <div>
-      <button className="rounded-full cursor-pointer bg-blue-500 px-3 font-semibold py-2 text-white hover:bg-blue-600">
-        {children}
-      </button>
-    </div>
+    <button
+      type={type}
+      className={`rounded-full cursor-pointer px-3 py-2 font-semibold text-white text-center min-w-[80px] ${className}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
   );
 };
 
