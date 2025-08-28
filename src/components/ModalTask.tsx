@@ -54,11 +54,7 @@ const ModalTask = (props: ModalTaskProps) => {
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              onClick={() => onSubmit}
-              className="bg-green-500 hover:bg-green-600"
-            >
+            <Button type="submit" className="bg-green-500 hover:bg-green-600">
               Save
             </Button>
           </div>
